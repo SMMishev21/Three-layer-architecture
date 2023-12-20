@@ -1,28 +1,30 @@
 function Login() {
-    var Username = document.getElementById("Username").value;
-    var Password = document.getElementById("Password").value;
+    var Username = document.getElementById('Username').value;
+    var Password = document.getElementById('Password').value;
 
-    // Read the content of the text file
-    fetch('../DATA-ACCESS-LAYER/DATABASE.txt')
-        .then(response => response.text())
-        .then(data => {
-            var users = data.split('\n');
-            var isValid = false;
+    // Read data from an external file (for educational purposes, not suitable for production)
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file';
 
-            // Check if the entered username and password match
-            users.forEach(user => {
-                var [LogedUsername, LogedPassword] = user.split(':');
-                if (Username === LogedUsername && Password === LogedPassword) {
-                    isValid = true;
-                }
-            });
+    fileInput.onchange = function() {
+        var file = fileInput.files[0];
+        var reader = new FileReader("DATABASE.txt");
 
-            // Display a message based on the validation
-            if (isValid) {
-                alert("Valid login!");
+        reader.onload = function(e) {
+            var data = e.target.result.split('\n');
+            var logedUsername = data[0].trim();
+            var logedPassword = data[1].trim();
+
+            // Simulate backend authentication
+            if (Username === logedUsername && Password === logedPassword) {
+                alert('You are logged!');
             } else {
-                alert("Invalid username or password. Please try again.");
+                alert('Try again!');
             }
-        })
-        .catch(error => console.error('Error reading the file:', error));
+        };
+
+        reader.readAsText(file);
+    };
+
+    fileInput.click();
 }
